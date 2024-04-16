@@ -46,13 +46,29 @@ class PingProxy(PingChecker):
             print("PingProxy: Access denied. IP address does not start with '192.'")
             return False
         
+    def execute(self, ip_address: str) -> None:
+        """
+        Realiza un ping a la dirección IP proporcionada o a www.google.com según la lógica especificada.
+        """
+        if ip_address == "192.168.0.254":
+            print("Ejecutando ping a www.google.com usando el método execute_free:")
+            self._execute_free("www.google.com")
+        else:
+            print("Reenviando ping a la dirección IP proporcionada:")
+            self._execute(ip_address)
+    def _execute(self, ip_address: str) -> None:
+        """
+        Realiza la operación de ping a la dirección IP utilizando el método execute_free.
+        """
+        print(f"Pinging {ip_address}...")
+        subprocess.run(["ping", ip_address])
 
-def execute_free(ip_address: str) -> None:
-    """
-    Realiza la operación de ping a la dirección IP proporcionada sin ningún control.
-    """
-    print(f"Pinging {ip_address}...")
-    subprocess.run(["ping", ip_address])
+    def _execute_free(self, host: str) -> None:
+        """
+        Realiza la operación de ping a un host utilizando el método execute_free.
+        """
+        subprocess.run(["ping", host])
+
 
 
 #def ping(ip_address: str) -> None:
@@ -67,15 +83,15 @@ if __name__ == "__main__":
     print("Executing the client code:")
     
     # Creating a real ping checker
-    #real_checker = RealPingChecker()
+    real_checker = RealPingChecker()
     
     # Creating a proxy for ping checking
-    #proxy = PingProxy(real_checker)
+    proxy = PingProxy(real_checker)
     
     # Attempting to ping an IP address
     ip_address = input("Enter an IP address to ping: ")
     
-    execute_free(ip_address)
+    proxy.execute(ip_address)
     # Checking access with the proxy
     #if proxy.check_access(ip_address):
         # If access is granted, perform ping operation
